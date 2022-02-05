@@ -60,7 +60,7 @@ router.post(
       facebook,
       twitter,
       instagram,
-      linkedin
+      linkedin,
     } = req.body;
 
     // build profile object
@@ -107,5 +107,60 @@ router.post(
     }
   }
 );
+
+// @route           Get api/profile
+// @description     Get all Profiles
+// @access          Public
+
+router.get('/', async (req, res) => {
+  try {
+    const profiles = await Profile.find().populate('user', ['name', 'avatar']); //find method returns all the profiles
+    res.json(profiles);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route           Get api/profile/user/:user_id
+// @description     Get Profile by user id
+// @access          Public
+
+router.get('/user/:user_id', async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.params.user_id,
+    }).populate('user', ['name', 'avatar']); //find method returns all the profiles
+    if (!profile) {
+      return res.status(400).json({ msg: 'Profile Not Found' });
+    }
+    res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind == 'ObjectID') {
+      return res.status(400).json({ msg: 'Profile Not Found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route           DELETE api/profile
+// @description     Delete Profile, user & post
+// @access          private
+
+router.delete('/', auth, async (req, res) => {
+  try {
+    // @todo - remove users and posts
+
+    // Remove profile
+    await Profile.findOneAndRemove({ user: req.user.id });
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    res.json({ msg: 'User Deleted' });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;
