@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { setAlert } from '../../action/alert';
 import { register } from '../../action/auth';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const Register = (props) => {
   const [formData, setFormData] = useState({
@@ -30,6 +31,12 @@ const Register = (props) => {
       props.register({ name, email, password });
     }
   };
+
+  // redirect if registered
+  let navigate = useNavigate();
+  if (props.isAuthenticated) {
+    return navigate('/dasboard');
+  }
 
   return (
     <Fragment>
@@ -97,6 +104,11 @@ const Register = (props) => {
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
 };
 
-export default connect(null, { setAlert, register })(Register);
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, { setAlert, register })(Register);
