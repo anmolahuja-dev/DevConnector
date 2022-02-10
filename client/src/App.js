@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { loadUser } from './action/auth';
 import setAuthToken from './utility/setAuthToken';
+import Error from './components/layout/Error';
 
 // Checking for authenticated user token in local storage
 if (localStorage.token) {
@@ -35,6 +36,10 @@ const App = () => {
             <Routes>
               <Route exact path='/register' element={<Register />}></Route>
               <Route exact path='/login' element={<Login />}></Route>
+              <Route
+                path='*'
+                element={<Error/>}
+              />
             </Routes>
           </section>
         </Fragment>
