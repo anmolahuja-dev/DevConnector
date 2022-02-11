@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { setAlert } from '../../action/alert';
 import { register } from '../../action/auth';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const Register = (props) => {
   const [formData, setFormData] = useState({
@@ -32,10 +32,8 @@ const Register = (props) => {
     }
   };
 
-  // redirect if registered
-  let navigate = useNavigate();
   if (props.isAuthenticated) {
-    return navigate('/dasboard');
+    return <Navigate to='/dashboard' />;
   }
 
   return (

@@ -12,6 +12,8 @@ import store from './store';
 import { loadUser } from './action/auth';
 import setAuthToken from './utility/setAuthToken';
 import Error from './components/layout/Error';
+import Dashboard from './components/dashboard/Dashboard';
+import PrivateRoute from './components/routing/PrivateRoute';
 
 // Checking for authenticated user token in local storage
 if (localStorage.token) {
@@ -29,17 +31,23 @@ const App = () => {
         <Fragment>
           <Navbar />
           <Routes>
-            <Route exact path='/' element={<Landing />}></Route>
+            <Route path='/' element={<Landing />}></Route>
           </Routes>
           <section className='container'>
             <Alert />
             <Routes>
-              <Route exact path='/register' element={<Register />}></Route>
-              <Route exact path='/login' element={<Login />}></Route>
+              <Route path='/register' element={<Register />}></Route>
+              <Route path='/login' element={<Login />}></Route>
               <Route
-                path='*'
-                element={<Error/>}
-              />
+                path='/dashboard'
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              ></Route>
+
+              <Route path='*' element={<Error />} />
             </Routes>
           </section>
         </Fragment>
